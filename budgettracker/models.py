@@ -4,7 +4,7 @@ from flask_login import UserMixin
 from sqlalchemy import Numeric, UniqueConstraint, func
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app import db, login_manager
+from extensions import db, login_manager
 
 DEFAULT_CATEGORIES = {
     "income": [

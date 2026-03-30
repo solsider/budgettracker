@@ -8,7 +8,7 @@ from flask import Blueprint, abort, flash, jsonify, redirect, render_template, r
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy import case, func
 
-from app import db
+from extensions import db
 from forms import CategoryDeleteForm, CategoryForm, ConfirmDeleteForm, LoginForm, RegisterForm, TransactionForm
 from models import Category, Transaction, User
 from utils.export import (

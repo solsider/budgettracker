@@ -3,19 +3,13 @@ import sqlite3
 
 from dotenv import load_dotenv
 from flask import Flask
-from flask_login import LoginManager
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 
 load_dotenv()
 
 from config import Config
-
-db = SQLAlchemy()
-login_manager = LoginManager()
-migrate = Migrate()
+from extensions import db, login_manager, migrate
 
 
 @event.listens_for(Engine, "connect")
@@ -43,7 +37,7 @@ def create_app(test_config=None):
     login_manager.login_message = "Для доступа к этой странице войдите в систему."
     login_manager.login_message_category = "warning"
 
-    from models import Category, Transaction, User
+    import models
     from routes import main_bp
 
     app.register_blueprint(main_bp)
