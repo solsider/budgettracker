@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Категории | BudgetTracker{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h1 class="h3 mb-1">Категории</h1>
+        <p class="text-muted mb-0">Управляйте цветами и типами категорий для быстрых записей и чистой аналитики.</p>
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('main.add_category') }}">Добавить категорию</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        {% if categories %}
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Цвет</th>
+                            <th>Название</th>
+                            <th>Тип</th>
+                            <th class="text-end">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td><span class="color-dot" style="background-color: {{ category.color }}"></span></td>
+                                <td>{{ category.name }}</td>
+                                <td>{{ "Доход" if category.type == "income" else "Расход" }}</td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-2">
+                                        <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('main.edit_category', category_id=category.id) }}">Редактировать</a>
+                                        <a class="btn btn-outline-danger btn-sm" href="{{ url_for('main.delete_category', category_id=category.id) }}">Удалить</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state p-5">
+                <h2 class="h5">Категорий пока нет</h2>
+                <p class="text-muted mb-3">Создайте первую категорию, чтобы точнее учитывать доходы и расходы.</p>
+                <a class="btn btn-primary" href="{{ url_for('main.add_category') }}">Добавить категорию</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
