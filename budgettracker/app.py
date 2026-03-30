@@ -1,10 +1,10 @@
 import os
 import sqlite3
+from pathlib import Path
 
 from dotenv import load_dotenv
 from flask import Flask
-from sqlalchemy import inspect
-from sqlalchemy import event
+from sqlalchemy import event, inspect
 from sqlalchemy.engine import Engine
 
 load_dotenv()
@@ -60,12 +60,32 @@ def _ensure_database_initialized(app):
     if not database_uri.startswith("sqlite"):
         return
 
+    _ensure_sqlite_storage_path(app, database_uri)
+
     inspector = inspect(db.engine)
     if inspector.has_table("users"):
         return
 
     # Для локальной разработки приложение должно стартовать даже без ручного запуска миграций.
     db.create_all()
+
+
+def _ensure_sqlite_storage_path(app, database_uri):
+    """Гарантирует, что каталог для SQLite-файла существует до первого подключения."""
+    sqlite_prefix = "sqlite:///"
+    if not database_uri.startswith(sqlite_prefix):
+        return
+
+    database_path = database_uri[len(sqlite_prefix):]
+    if not database_path or database_path == ":memory:":
+        return
+
+    # Относительный путь SQLite во Flask обычно живёт внутри instance-папки.
+    if not Path(database_path).is_absolute():
+        Path(app.instance_path).mkdir(parents=True, exist_ok=True)
+        return
+
+    Path(database_path).parent.mkdir(parents=True, exist_ok=True)
 
 
 app = create_app()
