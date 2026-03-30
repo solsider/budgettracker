@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Главная | BudgetTracker{% endblock %}
+{% block content %}
+<section class="hero-panel mb-4">
+    <div>
+        <p class="eyebrow mb-2">Личный финансовый трекер</p>
+        <h1 class="display-6 mb-3">Полная картина бюджета на одной странице</h1>
+        <p class="lead text-muted mb-0">Добавляйте операции, следите за трендами и быстро выгружайте отчёты в нужный формат.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 mt-3 mt-lg-0">
+        <a class="btn btn-primary" href="{{ url_for('main.add_transaction') }}">Добавить транзакцию</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('main.transactions') }}">Все транзакции</a>
+    </div>
+</section>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="metric-card">
+            <span class="metric-label">Текущий баланс</span>
+            <strong class="metric-value">{{ "%.2f"|format(balance|float) }}</strong>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="metric-card income">
+            <span class="metric-label">Доходы за месяц</span>
+            <strong class="metric-value">{{ "%.2f"|format(current_month_income|float) }}</strong>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="metric-card expense">
+            <span class="metric-label">Расходы за месяц</span>
+            <strong class="metric-value">{{ "%.2f"|format(current_month_expense|float) }}</strong>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h2 class="h4 mb-1">Последние 10 транзакций</h2>
+                <p class="text-muted mb-0">Самые свежие операции по вашему бюджету.</p>
+            </div>
+            <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('main.transactions') }}">Открыть список</a>
+        </div>
+        {% if recent_transactions %}
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Тип</th>
+                            <th>Категория</th>
+                            <th>Описание</th>
+                            <th class="text-end">Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in recent_transactions %}
+                            <tr>
+                                <td>{{ item.date.strftime("%d.%m.%Y") }}</td>
+                                <td>
+                                    <span class="badge {% if item.type == 'income' %}text-bg-success{% else %}text-bg-danger{% endif %}">
+                                        {{ "Доход" if item.type == "income" else "Расход" }}
+                                    </span>
+                                </td>
+                                <td>{{ item.category.name }}</td>
+                                <td>{{ item.description or "—" }}</td>
+                                <td class="text-end fw-semibold">{{ "%.2f"|format(item.amount|float) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3 class="h5">Транзакций пока нет</h3>
+                <p class="text-muted mb-3">Начните с первой записи, чтобы на главной появились баланс и аналитика.</p>
+                <a class="btn btn-primary" href="{{ url_for('main.add_transaction') }}">Создать первую транзакцию</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
