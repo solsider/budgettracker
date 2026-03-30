@@ -3,6 +3,7 @@ import sqlite3
 
 from dotenv import load_dotenv
 from flask import Flask
+from sqlalchemy import inspect
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 
@@ -42,12 +43,29 @@ def create_app(test_config=None):
 
     app.register_blueprint(main_bp)
 
+    with app.app_context():
+        _ensure_database_initialized(app)
+
     @app.context_processor
     def inject_env():
         """Передаёт переменные окружения в шаблоны."""
         return {"flask_env": app.config.get("FLASK_ENV", "development")}
 
     return app
+
+
+def _ensure_database_initialized(app):
+    """Создаёт таблицы автоматически для локальной SQLite-базы, если схема ещё не инициализирована."""
+    database_uri = app.config.get("SQLALCHEMY_DATABASE_URI", "")
+    if not database_uri.startswith("sqlite"):
+        return
+
+    inspector = inspect(db.engine)
+    if inspector.has_table("users"):
+        return
+
+    # Для локальной разработки приложение должно стартовать даже без ручного запуска миграций.
+    db.create_all()
 
 
 app = create_app()
