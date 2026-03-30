@@ -6,4 +6,12 @@ until flask --app app.py db upgrade; do
     sleep 2
 done
 
-python app.py
+if [ "$FLASK_ENV" = "development" ]; then
+    python app.py
+else
+    exec gunicorn \
+        --bind "0.0.0.0:${PORT:-8000}" \
+        --workers "${GUNICORN_WORKERS:-2}" \
+        --timeout "${GUNICORN_TIMEOUT:-120}" \
+        app:app
+fi
