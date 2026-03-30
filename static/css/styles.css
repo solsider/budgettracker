@@ -1,0 +1,125 @@
+:root {
+    --bg-start: #f4f1ea;
+    --bg-end: #eef6fb;
+    --ink: #1d2a39;
+    --muted: #5f6b7a;
+    --brand: #0d6efd;
+    --brand-dark: #0a4cb3;
+    --accent: #ffb703;
+    --card-border: rgba(13, 110, 253, 0.08);
+}
+
+body.app-shell {
+    min-height: 100vh;
+    font-family: "Manrope", sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at top left, rgba(255, 183, 3, 0.18), transparent 30%),
+        linear-gradient(145deg, var(--bg-start), var(--bg-end));
+}
+
+.navbar {
+    background: linear-gradient(120deg, #16324f, #0d6efd);
+}
+
+.hero-panel,
+.metric-card,
+.auth-card,
+.card {
+    border-radius: 1.25rem;
+}
+
+.hero-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 12px 36px rgba(24, 44, 73, 0.08);
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.75rem;
+    color: var(--brand);
+    font-weight: 800;
+}
+
+.metric-card {
+    height: 100%;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 10px 24px rgba(24, 44, 73, 0.06);
+}
+
+.metric-card.income {
+    background: linear-gradient(160deg, rgba(25, 135, 84, 0.16), rgba(255, 255, 255, 0.9));
+}
+
+.metric-card.expense {
+    background: linear-gradient(160deg, rgba(220, 53, 69, 0.14), rgba(255, 255, 255, 0.9));
+}
+
+.metric-label {
+    display: block;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.metric-value {
+    display: block;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.1;
+    font-weight: 800;
+}
+
+.metric-small {
+    font-size: 1.15rem;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.88);
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid var(--card-border) !important;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+}
+
+.color-dot {
+    display: inline-block;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 999px;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+}
+
+.table > :not(caption) > * > * {
+    padding: 1rem 0.9rem;
+}
+
+.btn-primary {
+    background: linear-gradient(120deg, var(--brand), var(--brand-dark));
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(120deg, var(--brand-dark), var(--brand));
+}
+
+@media (max-width: 992px) {
+    .hero-panel {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
