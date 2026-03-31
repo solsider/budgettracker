@@ -635,6 +635,58 @@ def analytics_data():
     return jsonify({"error": "Неизвестный тип аналитики."}), 400
 
 
+@main_bp.route("/api/transactions")
+@login_required
+def api_transactions():
+    """Возвращает список транзакций текущего пользователя в JSON."""
+    transactions = (
+        Transaction.query.filter_by(user_id=current_user.id)
+        .order_by(Transaction.date.desc(), Transaction.id.desc())
+        .all()
+    )
+
+    payload = [
+        {
+            "id": item.id,
+            "amount": float(item.amount),
+            "date": item.date.isoformat(),
+            "type": item.type,
+            "type_label": TYPE_LABELS.get(item.type, item.type),
+            "category_id": item.category_id,
+            "category_name": item.category.name,
+            "category_color": item.category.color,
+            "description": item.description or "",
+        }
+        for item in transactions
+    ]
+
+    return jsonify(payload)
+
+
+@main_bp.route("/api/categories")
+@login_required
+def api_categories():
+    """Возвращает список категорий текущего пользователя в JSON."""
+    categories = (
+        Category.query.filter_by(user_id=current_user.id)
+        .order_by(Category.type.asc(), Category.name.asc())
+        .all()
+    )
+
+    payload = [
+        {
+            "id": item.id,
+            "name": item.name,
+            "type": item.type,
+            "type_label": TYPE_LABELS.get(item.type, item.type),
+            "color": item.color,
+            "transactions_count": item.transactions.count(),
+        }
+        for item in categories
+    ]
+
+    return jsonify(payload)
+
 def _export_response(content_stream, mimetype, extension):
     """Отправляет пользователю сформированный файл."""
     return send_file(
